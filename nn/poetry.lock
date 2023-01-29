@@ -170,6 +170,25 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "torch"
+version = "1.12.1"
+description = "Tensors and Dynamic neural networks in Python with strong GPU acceleration"
+category = "main"
+optional = false
+python-versions = ">=3.7.0"
+
+[package.dependencies]
+typing-extensions = "*"
+
+[[package]]
+name = "typing-extensions"
+version = "4.4.0"
+description = "Backported and Experimental Type Hints for Python 3.7+"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "virtualenv"
 version = "20.17.1"
 description = "Virtual Python Environment builder"
@@ -197,7 +216,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "55590d67cc927351526bc71fa332a4e3722b10d46cdc54a141569c637a7b38a8"
+content-hash = "1ce5a6cefc10f4daa1c715b5fea77d235a38d13aa148ad634b66312de199528e"
 
 [metadata.files]
 atomicwrites = []
@@ -216,5 +235,7 @@ pre-commit = []
 py = []
 pytest = []
 pyyaml = []
+torch = []
+typing-extensions = []
 virtualenv = []
 wcwidth = []

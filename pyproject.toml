@@ -34,3 +34,6 @@ target-version = "py39"
 
 [tool.ruff.mccabe]
 max-complexity = 10
+
+[tool.isort]
+profile = "black"
