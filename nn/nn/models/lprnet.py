@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Sequence
 
 import torch
@@ -111,3 +112,13 @@ class LPRNet(nn.Module):
         x = self.container(x)
         logits = torch.mean(x, dim=2)
         return logits
+
+
+def load_lprnet(
+    weights: Path, num_classes: int, out_indices: list[int], device: torch.device
+) -> LPRNet:
+    model = LPRNet(class_num=num_classes, out_indices=out_indices)
+    checkpoint = torch.load(weights, map_location="cpu")
+    model.load_state_dict(checkpoint["net_state_dict"])
+    model = model.to(device).eval()
+    return model

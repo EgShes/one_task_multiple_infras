@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -37,3 +39,11 @@ class SpatialTransformer(nn.Module):
         x = F.grid_sample(x, grid, align_corners=True)
 
         return x
+
+
+def load_stn(weights: Path, device: torch.device) -> SpatialTransformer:
+    model = SpatialTransformer()
+    checkpoint = torch.load(weights, map_location="cpu")
+    model.load_state_dict(checkpoint["net_state_dict"])
+    model = model.to(device).eval()
+    return model
