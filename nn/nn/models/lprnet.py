@@ -3,6 +3,7 @@ from typing import Sequence
 
 import torch
 import torch.nn as nn
+from torch import Tensor
 
 
 class SmallBasicBlock(nn.Module):
@@ -30,7 +31,7 @@ class SmallBasicBlock(nn.Module):
             nn.Conv2d(intermediate_channels, out_channels, kernel_size=1),
         )
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         return self.block(x)
 
 
@@ -88,7 +89,7 @@ class LPRNet(nn.Module):
             stride=(1, 1),
         )
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         extracted_feature_maps = list()
         for i, layer in enumerate(self.backbone.children()):
             x = layer(x)

@@ -1,7 +1,7 @@
 import torch
 
 from nn.models.lprnet import LPRNet, load_lprnet
-from nn.settings import model_settings
+from nn.settings import settings
 
 
 def test_forward():
@@ -17,8 +17,8 @@ def test_forward():
 
 def test_load():
     load_lprnet(
-        weights=model_settings.LPRNET.WEIGHTS,
-        num_classes=model_settings.LPRNET.NUM_CLASSES,
-        out_indices=model_settings.LPRNET.OUT_INDICES,
+        weights=settings.LPRNET.WEIGHTS,
+        num_classes=settings.LPRNET.NUM_CLASSES,
+        out_indices=settings.LPRNET.OUT_INDICES,
         device=torch.device("cpu"),
     )

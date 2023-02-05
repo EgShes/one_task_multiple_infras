@@ -156,3 +156,4 @@ cython_debug/
 .ruff_cache
 
 nn/nn/weights/*.pth
+nn/nn/weights/*.pt
