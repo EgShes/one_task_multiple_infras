@@ -1,6 +1,7 @@
 import torch
 
-from nn.models.lprnet import LPRNet
+from nn.models.lprnet import LPRNet, load_lprnet
+from nn.settings import model_settings
 
 
 def test_forward():
@@ -12,3 +13,12 @@ def test_forward():
 
     assert outputs.shape[0] == bs
     assert outputs.shape[1] == num_classes
+
+
+def test_load():
+    load_lprnet(
+        weights=model_settings.LPRNET.WEIGHTS,
+        num_classes=model_settings.LPRNET.NUM_CLASSES,
+        out_indices=model_settings.LPRNET.OUT_INDICES,
+        device=torch.device("cpu"),
+    )

@@ -1,6 +1,7 @@
 import torch
 
-from nn.models.stn import SpatialTransformer
+from nn.models.stn import SpatialTransformer, load_stn
+from nn.settings import model_settings
 
 
 def test_forward():
@@ -11,3 +12,7 @@ def test_forward():
         outputs = model(inputs)
 
     assert outputs.shape == inputs.shape
+
+
+def test_load():
+    load_stn(weights=model_settings.STN.WEIGHTS, device=torch.device("cpu"))
