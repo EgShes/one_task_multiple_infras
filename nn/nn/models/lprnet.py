@@ -3,6 +3,7 @@ from typing import Sequence
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch import Tensor
 
 
@@ -99,10 +100,10 @@ class LPRNet(nn.Module):
         global_contex_emb = list()
         for i, feature_map in enumerate(extracted_feature_maps):
             if i <= 1:
-                feature_map = nn.AvgPool2d(kernel_size=5, stride=5)(feature_map)
+                feature_map = F.avg_pool2d(feature_map, kernel_size=5, stride=5)
             if i == 2:
-                feature_map = nn.AvgPool2d(kernel_size=(4, 10), stride=(4, 2))(
-                    feature_map
+                feature_map = F.avg_pool2d(
+                    feature_map, kernel_size=(4, 10), stride=(4, 2)
                 )
             f_pow = torch.pow(feature_map, 2)
             f_mean = torch.mean(f_pow)
