@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, NamedTuple, Optional, Union
+from typing import Callable, List, NamedTuple, Optional, Union
 
 import cv2
 import numpy as np
@@ -97,7 +97,7 @@ class Predictor:
         self._decode_fn = decode_fn
 
     @torch.no_grad()
-    def predict(self, image_path: Path) -> list[Prediction]:
+    def predict(self, image_path: Path) -> List[Prediction]:
         img = prepare_detection_input(image_path)
         detection = self._yolo(img, size=settings.YOLO.PREDICT_SIZE)
         df_results = detection.pandas().xyxy[0]

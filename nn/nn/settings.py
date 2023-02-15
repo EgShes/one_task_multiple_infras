@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List, Tuple
 
 from pydantic import BaseSettings
 
@@ -6,7 +7,7 @@ WEIGHTS_PATH = Path(__file__).resolve().parent / "weights"
 
 
 class VocabularySettings(BaseSettings):
-    VOCAB: list[str] = [
+    VOCAB: List[str] = [
         "0",
         "1",
         "2",
@@ -41,8 +42,8 @@ class YoloSettings(BaseSettings):
 
 class LprnetSettings(BaseSettings):
     NUM_CLASSES: int = 23
-    OUT_INDICES: list[int] = [2, 6, 13, 22]
-    IMG_SIZE: tuple[int, int] = (94, 24)
+    OUT_INDICES: List[int] = [2, 6, 13, 22]
+    IMG_SIZE: Tuple[int, int] = (94, 24)
     WEIGHTS: Path = WEIGHTS_PATH / "lprnet.pth"
 
 

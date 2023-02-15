@@ -5,7 +5,7 @@ description = ""
 authors = ["shest <shestopalovegor@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "~3.9"
+python = "~3.8"
 nn = {path = "../nn", develop = true}
 
 [tool.poetry.dev-dependencies]

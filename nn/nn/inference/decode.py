@@ -1,7 +1,9 @@
+from typing import List
+
 import numpy as np
 
 
-def greedy_decode(predicted_seq, chars_list: list[str]):
+def greedy_decode(predicted_seq, chars_list: List[str]):
     full_pred_labels = []
     labels = []
     for i in range(predicted_seq.shape[0]):
@@ -33,7 +35,7 @@ def greedy_decode(predicted_seq, chars_list: list[str]):
     return labels, full_pred_labels
 
 
-def beam_decode(predicted_seq, chars_list: list[str]):
+def beam_decode(predicted_seq, chars_list: List[str]):
     labels = []
     final_labels = []
     final_prob = []

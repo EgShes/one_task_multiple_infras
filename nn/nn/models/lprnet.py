@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Sequence
+from typing import List, Sequence
 
 import torch
 import torch.nn as nn
@@ -117,7 +117,7 @@ class LPRNet(nn.Module):
 
 
 def load_lprnet(
-    weights: Path, num_classes: int, out_indices: list[int], device: torch.device
+    weights: Path, num_classes: int, out_indices: List[int], device: torch.device
 ) -> LPRNet:
     model = LPRNet(class_num=num_classes, out_indices=out_indices)
     checkpoint = torch.load(weights, map_location="cpu")
