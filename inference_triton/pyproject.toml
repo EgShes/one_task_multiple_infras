@@ -8,8 +8,9 @@ authors = ["shest <shestopalovegor@gmail.com>"]
 python = "~3.8"
 nn = {path = "../nn", develop = true}
 
-[tool.poetry.dev-dependencies]
-pytest = "^5.2"
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.4"
+pytest = "^7.2.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
