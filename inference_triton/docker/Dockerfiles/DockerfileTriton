@@ -1,0 +1,43 @@
+# syntax=docker/dockerfile:1
+
+# Tritonserver container has pre-installed python. I failed to install packages into it with poetry.
+# So they are installed with pip.
+FROM python:3.8 as requirements_maker
+
+ENV POETRY_VENV_PATH=/opt/poetry_venv
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3.8 -m venv $POETRY_VENV_PATH \
+    && $POETRY_VENV_PATH/bin/pip install pip==22.0.4 setuptools==56.0.0 \
+    && $POETRY_VENV_PATH/bin/pip install poetry==1.3.2 \
+    && ln $POETRY_VENV_PATH/bin/poetry /usr/local/bin/poetry
+
+COPY ../inference_triton/pyproject.toml /app/inference_triton/pyproject.toml
+COPY ../inference_triton/poetry.lock /app/inference_triton/poetry.lock
+COPY ../inference_triton/inference_triton/__init__.py /app/inference_triton/inference_triton/__init__.py
+COPY ../nn/pyproject.toml /app/nn/pyproject.toml
+COPY ../nn/poetry.lock /app/nn/poetry.lock
+COPY ../nn/nn/__init__.py /app/nn/nn/__init__.py
+
+WORKDIR /app/inference_triton
+
+RUN poetry export --format requirements.txt --without-hashes > /requirements.txt
+
+
+FROM nvcr.io/nvidia/tritonserver:22.01-pyt-python-py3 as base
+
+COPY --from=requirements_maker /requirements.txt /requirements.txt
+
+COPY ../inference_triton/pyproject.toml /app/inference_triton/pyproject.toml
+COPY ../inference_triton/poetry.lock /app/inference_triton/poetry.lock
+COPY ../inference_triton/inference_triton/__init__.py /app/inference_triton/inference_triton/__init__.py
+COPY ../nn/pyproject.toml /app/nn/pyproject.toml
+COPY ../nn/poetry.lock /app/nn/poetry.lock
+COPY ../nn/nn/__init__.py /app/nn/nn/__init__.py
+
+WORKDIR /app/inference_triton
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r /requirements.txt \
+    && pip install -e ../nn
+
+CMD tritonserver --model-repository inference_triton/model_repository

@@ -11,12 +11,14 @@ from nn.settings import settings
 
 class TritonPythonModel:
     def initialize(self, args):
-        self.model_config = model_config = json.loads(args["model_config"])
+        self.model_config = json.loads(args["model_config"])
         self.model = load_yolo(
             settings.YOLO.WEIGHTS, settings.YOLO.CONFIDENCE, torch.device("cuda")
         )
 
-        output0_config = pb_utils.get_output_config_by_name(model_config, "output0")
+        output0_config = pb_utils.get_output_config_by_name(
+            self.model_config, "output0"
+        )
 
         self.output0_dtype = pb_utils.triton_string_to_numpy(
             output0_config["data_type"]
