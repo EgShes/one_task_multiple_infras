@@ -9,5 +9,4 @@ services:
       - ../../nn:/app/nn
     ports:
       - 8000:8000
-      - 8001:8001
-      - 8002:8002
+    shm_size: '1gb'

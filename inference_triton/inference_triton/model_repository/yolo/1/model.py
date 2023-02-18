@@ -19,9 +19,15 @@ class TritonPythonModel:
         output0_config = pb_utils.get_output_config_by_name(
             self.model_config, "output__0"
         )
+        output1_config = pb_utils.get_output_config_by_name(
+            self.model_config, "output__1"
+        )
 
         self.output0_dtype = pb_utils.triton_string_to_numpy(
             output0_config["data_type"]
+        )
+        self.output1_dtype = pb_utils.triton_string_to_numpy(
+            output1_config["data_type"]
         )
 
     def execute(
@@ -44,9 +50,15 @@ class TritonPythonModel:
             out_tensor_0 = pb_utils.Tensor(
                 "output__0", img_plates.astype(self.output0_dtype)
             )
+            out_tensor_1 = pb_utils.Tensor(
+                "output__1",
+                df_results[["xmin", "ymin", "xmax", "ymax"]]
+                .to_numpy()
+                .astype(self.output1_dtype),
+            )
 
             inference_response = pb_utils.InferenceResponse(
-                output_tensors=[out_tensor_0]
+                output_tensors=[out_tensor_0, out_tensor_1]
             )
             responses.append(inference_response)
 
