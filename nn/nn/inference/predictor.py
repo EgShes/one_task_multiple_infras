@@ -63,11 +63,12 @@ def prepare_recognition_input(
         return cropped_images
 
 
-def filter_predictions(df_results, labels, log_likelihood):
+def filter_predictions(labels: List[str], log_likelihoods: List[float]) -> List[str]:
+    assert len(labels) == len(log_likelihoods)
     final_labels = []
-    for row in range(df_results.shape[0]):
-        if (log_likelihood[row] < -85) and (len(labels[row]) in [8, 9]):
-            final_labels.append(labels[row])
+    for text, log_likelihood in zip(labels, log_likelihoods):
+        if (log_likelihood < -85) and (8 <= len(text) <= 9):
+            final_labels.append(text)
         else:
             final_labels.append(None)
     return final_labels
@@ -110,8 +111,7 @@ class Predictor:
         predictions = predictions.cpu().detach().numpy()
 
         labels, log_likelihood, _ = self._decode_fn(predictions, settings.VOCAB.VOCAB)
-        filtered_predictions = filter_predictions(df_results, labels, log_likelihood)
-        df_results["number"] = filtered_predictions
+        df_results["number"] = filter_predictions(labels, log_likelihood)
 
         results = [
             Prediction(
