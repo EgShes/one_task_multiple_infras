@@ -22,5 +22,5 @@ DOCKER_BUILDKIT=1 docker-compose -f prod.yml up --build
 3. Run tests
 
     ```bash
-    pytest tests -vv
+    pytest ./tests -vv
     ```

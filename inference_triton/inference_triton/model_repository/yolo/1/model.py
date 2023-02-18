@@ -4,7 +4,7 @@ from typing import List
 import torch
 import triton_python_backend_utils as pb_utils
 
-from nn.inference.predictor import prepare_recognition_input
+from nn.inference.predictor import prepare_detection_input, prepare_recognition_input
 from nn.models import load_yolo
 from nn.settings import settings
 
@@ -17,7 +17,7 @@ class TritonPythonModel:
         )
 
         output0_config = pb_utils.get_output_config_by_name(
-            self.model_config, "output0"
+            self.model_config, "output__0"
         )
 
         self.output0_dtype = pb_utils.triton_string_to_numpy(
@@ -28,12 +28,11 @@ class TritonPythonModel:
         self, requests: List[pb_utils.InferenceRequest]
     ) -> List[pb_utils.InferenceRequest]:
 
-        output0_dtype = self.output0_dtype
-
         responses = []
 
         for request in requests:
-            image = pb_utils.get_input_tensor_by_name(request, "input0")
+            image = pb_utils.get_input_tensor_by_name(request, "input__0").as_numpy()
+            image = prepare_detection_input(image)
 
             detection = self.model(image, size=settings.YOLO.PREDICT_SIZE)
 
@@ -42,7 +41,9 @@ class TritonPythonModel:
                 df_results, image, return_torch=False
             )
 
-            out_tensor_0 = pb_utils.Tensor("output0", img_plates.astype(output0_dtype))
+            out_tensor_0 = pb_utils.Tensor(
+                "output__0", img_plates.astype(self.output0_dtype)
+            )
 
             inference_response = pb_utils.InferenceResponse(
                 output_tensors=[out_tensor_0]
