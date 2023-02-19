@@ -1,0 +1,12 @@
+services:
+
+  triton:
+    build:
+      context: ../..
+      dockerfile: inference_triton/docker/Dockerfiles/DockerfileTriton
+    volumes:
+      - ../../inference_triton:/app/inference_triton
+      - ../../nn:/app/nn
+    ports:
+      - 8000:8000
+    shm_size: '1gb'

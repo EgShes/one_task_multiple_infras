@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "inference_triton"
+version = "0.1.0"
+description = ""
+authors = ["shest <shestopalovegor@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "~3.8"
+nn = {path = "../nn", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.4"
+pytest = "^7.2.1"
+tritonclient = {extras = ["all"], version = "^2.30.0"}
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

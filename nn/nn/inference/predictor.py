@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Callable, NamedTuple, Optional, Union
+from typing import Callable, List, NamedTuple, Optional, Union
 
 import cv2
 import numpy as np
@@ -32,8 +32,11 @@ def prepare_detection_input(image: Union[ndarray, str, Path]) -> ndarray:
 
 
 def prepare_recognition_input(
-    df_results: pd.DataFrame, image: np.ndarray, device: device
-) -> Tensor:
+    df_results: pd.DataFrame,
+    image: np.ndarray,
+    return_torch: bool = True,
+    device: Optional[device] = None,
+) -> Union[ndarray, Tensor]:
     cropped_images = []
     for row in range(df_results.shape[0]):
         height = df_results.iloc[row][3] - df_results.iloc[row][1]
@@ -51,14 +54,21 @@ def prepare_recognition_input(
             np.transpose(np.float32(license_plate), (2, 0, 1)) - 127.5
         ) * 0.0078125
         cropped_images.append(license_plate)
-    return torch.from_numpy(np.array(cropped_images)).float().to(device)
+
+    cropped_images = np.array(cropped_images)
+
+    if return_torch:
+        return torch.from_numpy(cropped_images).to(device)
+    else:
+        return cropped_images
 
 
-def filter_predictions(df_results, labels, log_likelihood):
+def filter_predictions(labels: List[str], log_likelihoods: List[float]) -> List[str]:
+    assert len(labels) == len(log_likelihoods)
     final_labels = []
-    for row in range(df_results.shape[0]):
-        if (log_likelihood[row] < -85) and (len(labels[row]) in [8, 9]):
-            final_labels.append(labels[row])
+    for text, log_likelihood in zip(labels, log_likelihoods):
+        if (log_likelihood < -85) and (8 <= len(text) <= 9):
+            final_labels.append(text)
         else:
             final_labels.append(None)
     return final_labels
@@ -88,19 +98,20 @@ class Predictor:
         self._decode_fn = decode_fn
 
     @torch.no_grad()
-    def predict(self, image_path: Path) -> list[Prediction]:
+    def predict(self, image_path: Path) -> List[Prediction]:
         img = prepare_detection_input(image_path)
         detection = self._yolo(img, size=settings.YOLO.PREDICT_SIZE)
         df_results = detection.pandas().xyxy[0]
 
-        license_plate_batch = prepare_recognition_input(df_results, img, self._device)
+        license_plate_batch = prepare_recognition_input(
+            df_results, img, return_torch=True, device=self._device
+        )
         transfer = self._stn(license_plate_batch)
         predictions = self._lprn(transfer)
         predictions = predictions.cpu().detach().numpy()
 
         labels, log_likelihood, _ = self._decode_fn(predictions, settings.VOCAB.VOCAB)
-        filtered_predictions = filter_predictions(df_results, labels, log_likelihood)
-        df_results["number"] = filtered_predictions
+        df_results["number"] = filter_predictions(labels, log_likelihood)
 
         results = [
             Prediction(
