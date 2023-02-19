@@ -154,6 +154,3 @@ cython_debug/
 
 .vscode
 .ruff_cache
-
-nn/nn/weights/*.pth
-nn/nn/weights/*.pt
