@@ -2,7 +2,7 @@
 name = "inference_triton"
 version = "0.1.0"
 description = ""
-authors = ["shest <shestopalovegor@gmail.com>"]
+authors = ["shest"]
 
 [tool.poetry.dependencies]
 python = "~3.8"
