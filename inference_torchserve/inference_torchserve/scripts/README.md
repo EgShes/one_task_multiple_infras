@@ -1,0 +1,20 @@
+# Prepare models for TorchServe
+
+## Virtual environment
+
+To install and activate venv run
+```bash
+poetry install --with=dev
+poetry shell
+```
+
+## Yolo
+
+```bash
+torch-model-archiver --model-name yolo --version 1.0 --serialized-file ../nn/nn/weights/yolo.pt --handler inference_torchserve/handlers/yolo.py --export-path inference_torchserve/model_store/
+```
+
+
+torchserve --start --model-store inference_torchserve/model_store/ --models all --ncs
+curl http://localhost:8080/predictions/yolo -F "data=@../nn/tests/data/car.jpg"
+curl http://localhost:8080/predictions/yolo -F "data=@kitten_small.jpg"
