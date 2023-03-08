@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import List
 
+import numpy as np
 import pytest
 import requests
 
@@ -41,3 +42,16 @@ def test_yolo(image: Path, expected_plates: List[PlatePrediction]):
         assert pred_plate.xmax == exp_plate.xmax
         assert pred_plate.ymax == exp_plate.ymax
         assert pred_plate.confidence == pytest.approx(exp_plate.confidence, abs=1e-3)
+
+
+def test_lprnet():
+    input_shape = (4, 3, 24, 94)
+    output_shape = (4, 23, 18)
+
+    inputs = np.random.randn(*input_shape).astype(np.float32).tobytes()
+
+    response = requests.post("http://localhost:8080/predictions/lprnet", data=inputs)
+
+    output = np.array(response.json()["data"])
+
+    assert output.shape == output_shape

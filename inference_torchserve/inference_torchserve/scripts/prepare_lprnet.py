@@ -1,9 +1,14 @@
+import logging
 from pathlib import Path
 
 import torch
 
 from nn.models import load_lprnet
 from nn.settings import settings
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 if __name__ == "__main__":
     model_path = Path("/tmp", "lprnet.pt")
@@ -21,6 +26,7 @@ if __name__ == "__main__":
 
     traced_model = torch.jit.trace(model, dummy_input)
     traced_model.save(model_path)
+    logger.info(f"Successfully save to {model_path}")
 
     with torch.no_grad():
         orig_res = model(dummy_input)
