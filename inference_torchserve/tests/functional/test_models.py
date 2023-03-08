@@ -59,12 +59,11 @@ def test_stn():
 
 def test_lprnet():
     input_shape = (4, 3, 24, 94)
-    output_shape = (4, 23, 18)
 
     inputs = np.random.randn(*input_shape).astype(np.float32).tobytes()
 
     response = requests.post("http://localhost:8080/predictions/lprnet", data=inputs)
 
-    output = np.array(response.json()["data"])
-
-    assert output.shape == output_shape
+    texts = response.json()["data"]
+    for text in texts:
+        assert isinstance(text, str)
