@@ -14,6 +14,13 @@ poetry shell
 torch-model-archiver --model-name yolo --version 1.0 --serialized-file ../nn/nn/weights/yolo.pt --handler inference_torchserve/handlers/yolo.py --export-path inference_torchserve/model_store/
 ```
 
+## STN
+
+```bash
+python inference_torchserve/scripts/prepare_stn.py
+torch-model-archiver --model-name stn --version 1.0 --serialized-file /tmp/stn.pt --handler inference_torchserve/handlers/stn.py --export-path inference_torchserve/model_store/
+```
+
 ## LPRNET
 
 ```bash

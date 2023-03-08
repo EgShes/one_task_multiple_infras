@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-class LprnetHandler(BaseHandler, ABC):
+class StnHandler(BaseHandler, ABC):
     def __init__(self):
         super().__init__()
 
@@ -17,7 +17,7 @@ class LprnetHandler(BaseHandler, ABC):
         features = data[0].get("data") or data[0].get("body")
         features = np.frombuffer(features, dtype=np.float32).reshape(-1, 3, 24, 94)
         features = torch.from_numpy(features)
-        logger.info(f"LPRNET received input: {features.shape}")
+        logger.info(f"STN received input: {features.shape}")
         return features
 
     def postprocess(self, data):

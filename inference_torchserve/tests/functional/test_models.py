@@ -44,6 +44,19 @@ def test_yolo(image: Path, expected_plates: List[PlatePrediction]):
         assert pred_plate.confidence == pytest.approx(exp_plate.confidence, abs=1e-3)
 
 
+def test_stn():
+    input_shape = (4, 3, 24, 94)
+    output_shape = (4, 3, 24, 94)
+
+    inputs = np.random.randn(*input_shape).astype(np.float32).tobytes()
+
+    response = requests.post("http://localhost:8080/predictions/stn", data=inputs)
+
+    output = np.array(response.json()["data"])
+
+    assert output.shape == output_shape
+
+
 def test_lprnet():
     input_shape = (4, 3, 24, 94)
     output_shape = (4, 23, 18)
