@@ -43,7 +43,9 @@ COPY ../nn/poetry.lock $HOMEDIR/nn/poetry.lock
 COPY ../nn/nn/__init__.py $HOMEDIR/nn/nn/__init__.py
 
 WORKDIR $HOMEDIR/inference_torchserve
-
+USER root
+RUN chmod -R 777 $HOMEDIR
+USER model-server
 
 
 FROM base as dev
@@ -61,4 +63,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip install ../nn \
     && pip install .
 
-CMD [ "torchserve", "--start", "--ts-config", "inference_torchserve/config.properties", "--model-store", "inference_torchserve/model_store/", "--models", "all", "--ncs" ]
+CMD [ \
+    "torchserve", "--start", "--ts-config", "inference_torchserve/config.properties", "--models", "all", "--ncs", \
+    "&&", "python", "inference_torchserve/scripts/register_workflows.py", "--workflow_names", "plate_recognition.war" \
+]

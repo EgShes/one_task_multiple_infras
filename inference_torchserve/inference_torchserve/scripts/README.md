@@ -28,6 +28,8 @@ python inference_torchserve/scripts/prepare_lprnet.py
 torch-model-archiver --model-name lprnet --version 1.0 --serialized-file /tmp/lprnet.pt --handler inference_torchserve/handlers/lprnet.py --export-path inference_torchserve/model_store/
 ```
 
-torchserve --start --model-store inference_torchserve/model_store/ --models all --ncs
-curl http://localhost:8080/predictions/yolo -F "data=@../nn/tests/data/car.jpg"
-curl http://localhost:8080/predictions/yolo -F "data=@kitten_small.jpg"
+## Plate recognition
+
+```bash
+torch-workflow-archiver --workflow-name plate_recognition --spec-file inference_torchserve/workflow/plate_recognition.yaml --handler inference_torchserve/handlers/workflow/plate_recognition.py --export-path inference_torchserve/model_store/
+```
