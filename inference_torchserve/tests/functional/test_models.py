@@ -1,15 +1,15 @@
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 import numpy as np
 import pytest
 import requests
 
-from inference_torchserve.data_models import DetectorPrediction, PlatePrediction
+from inference_torchserve.data_models import PlatePrediction
 
 
 @pytest.mark.parametrize(
-    "image,expected_plates",
+    "image,expected_plates,expected_shape",
     [
         (
             Path("tests/data/car.jpg"),
@@ -27,21 +27,27 @@ from inference_torchserve.data_models import DetectorPrediction, PlatePrediction
                     xmin=1286, ymin=635, xmax=1316, ymax=644, confidence=0.689
                 ),
             ],
+            (4, 3, 24, 94),
         ),
-        (Path("tests/data/cat.jpeg"), []),
+        (Path("tests/data/cat.jpeg"), [], (0,)),
     ],
 )
-def test_yolo(image: Path, expected_plates: List[PlatePrediction]):
+def test_yolo(
+    image: Path, expected_plates: List[PlatePrediction], expected_shape: Tuple[int]
+):
     response = requests.post(
         "http://localhost:8080/predictions/yolo", data=image.open("rb").read()
     )
-    prediction = DetectorPrediction.parse_obj(response.json())
-    for pred_plate, exp_plate in zip(prediction.plates, expected_plates):
+    prediction = response.json()
+    for pred_plate, exp_plate in zip(prediction["coordinates"], expected_plates):
+        pred_plate = PlatePrediction.parse_obj(pred_plate)
         assert pred_plate.xmin == exp_plate.xmin
         assert pred_plate.ymin == exp_plate.ymin
         assert pred_plate.xmax == exp_plate.xmax
         assert pred_plate.ymax == exp_plate.ymax
         assert pred_plate.confidence == pytest.approx(exp_plate.confidence, abs=1e-3)
+
+    assert np.array(prediction["data"]).shape == expected_shape
 
 
 def test_stn():

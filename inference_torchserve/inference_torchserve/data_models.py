@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel, confloat, conint
 
 COORDINATE = conint(ge=0)
@@ -12,8 +10,3 @@ class PlatePrediction(BaseModel):
     xmax: COORDINATE
     ymax: COORDINATE
     confidence: CONFIDENCE
-
-
-class DetectorPrediction(BaseModel):
-    request_id: str
-    plates: List[PlatePrediction]

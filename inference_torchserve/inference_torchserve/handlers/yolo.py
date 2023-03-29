@@ -8,8 +8,8 @@ import torch
 from PIL import Image
 from ts.torch_handler.base_handler import BaseHandler
 
-from inference_torchserve.data_models import DetectorPrediction, PlatePrediction
-from nn.inference.predictor import prepare_detection_input
+from inference_torchserve.data_models import PlatePrediction
+from nn.inference.predictor import prepare_detection_input, prepare_recognition_input
 from nn.models.yolo import load_yolo
 from nn.settings import settings
 
@@ -44,44 +44,37 @@ class YoloDetectorHandler(BaseHandler, ABC):
 
         self.initialized = True
 
-    def preprocess(self, requests):
-        inputs = []
+    def preprocess(self, data):
+        image = data[0].get("data") or data[0].get("body")
+        image = Image.open(io.BytesIO(image)).convert("RGB")
+        image = prepare_detection_input(np.array(image))
 
-        for data in requests:
-            image = data.get("data") or data.get("body")
-            image = Image.open(io.BytesIO(image)).convert("RGB")
-            image = prepare_detection_input(np.array(image))
-            inputs.append(image)
+        logger.info(f"Yolo received image: {image.shape}")
 
-            logger.info(f"Yolo received image: {image.shape}")
-
-        return inputs
+        return [image]
 
     def inference(self, input_batch):
         preds = self.model(input_batch, size=settings.YOLO.PREDICT_SIZE)
         return preds
 
     def postprocess(self, inference_output):
-        outputs = []
-        for request_id, image_results in enumerate(inference_output.pandas().xyxy):
-            plates = []
-            for _, row in image_results.iterrows():
-                plates.append(
-                    PlatePrediction(
-                        xmin=row["xmin"],
-                        ymin=row["ymin"],
-                        xmax=row["xmax"],
-                        ymax=row["ymax"],
-                        confidence=row["confidence"],
-                    )
-                )
-            outputs.append(
-                DetectorPrediction(
-                    request_id=self.context.request_ids[request_id],
-                    plates=plates,
+        output_data = {}
+
+        plates_coords = inference_output.pandas().xyxy[0]
+        plates = []
+        for _, row in plates_coords.iterrows():
+            plates.append(
+                PlatePrediction(
+                    xmin=row["xmin"],
+                    ymin=row["ymin"],
+                    xmax=row["xmax"],
+                    ymax=row["ymax"],
+                    confidence=row["confidence"],
                 )
             )
+        output_data["data"] = prepare_recognition_input(
+            plates_coords, inference_output.ims[0], return_torch=False
+        ).tolist()
+        output_data["coordinates"] = [plate.dict() for plate in plates]
 
-        # convert pydantic to dict as torchserve does not support
-        outputs = [pred.dict() for pred in outputs]
-        return outputs
+        return [output_data]
