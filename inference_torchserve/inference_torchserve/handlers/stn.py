@@ -1,3 +1,4 @@
+import json
 import logging
 from abc import ABC
 
@@ -15,8 +16,23 @@ class StnHandler(BaseHandler, ABC):
 
     def preprocess(self, data):
         features = data[0].get("data") or data[0].get("body")
-        features = np.frombuffer(features, dtype=np.float32).reshape(-1, 3, 24, 94)
-        features = torch.from_numpy(features)
+
+        features_numpy = None
+        try:
+            # when used right after yolo
+            features_numpy = np.array(
+                json.loads(features.decode("utf-8"))["data"], dtype=np.float32
+            )
+        except UnicodeDecodeError:
+            pass
+
+        if features_numpy is None:
+            # when used on its own
+            features_numpy = np.frombuffer(features, dtype=np.float32).reshape(
+                -1, 3, 24, 94
+            )
+
+        features = torch.from_numpy(features_numpy)
         logger.info(f"STN received input: {features.shape}")
         return features
 

@@ -1,0 +1,20 @@
+models:
+    min-workers: 1
+    max-workers: 1
+    batch-size: 4
+    max-batch-delay: 100
+    retry-attempts: 5
+    timeout-ms: 300000
+
+    yolo:
+      url: "yolo.mar"
+
+    stn:
+      url: stn.mar
+
+    lprnet:
+      url: lprnet.mar
+
+dag:
+  yolo: [stn]
+  stn: [lprnet]

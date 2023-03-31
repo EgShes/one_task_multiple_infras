@@ -73,3 +73,13 @@ def test_lprnet():
     texts = response.json()["data"]
     for text in texts:
         assert isinstance(text, str)
+
+
+def test_plate_recognition():
+    image = Path("tests/data/car.jpg")
+    # image = Path("tests/data/cat.jpeg")
+    response = requests.post(
+        "http://localhost:8080/wfpredict/plate_recognition",
+        data=image.open("rb").read(),
+    )
+    assert response.json()["data"] == ["B840OK197", "", "", ""]

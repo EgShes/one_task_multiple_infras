@@ -31,5 +31,5 @@ torch-model-archiver --model-name lprnet --version 1.0 --serialized-file /tmp/lp
 ## Plate recognition
 
 ```bash
-torch-workflow-archiver --workflow-name plate_recognition --spec-file inference_torchserve/workflow/plate_recognition.yaml --handler inference_torchserve/handlers/workflow/plate_recognition.py --export-path inference_torchserve/model_store/
+torch-workflow-archiver --workflow-name plate_recognition --spec-file inference_torchserve/workflow/plate_recognition.yaml --handler inference_torchserve/handlers/plate_recognition.py --export-path inference_torchserve/model_store/
 ```
