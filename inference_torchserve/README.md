@@ -6,6 +6,10 @@ Recognition of russian car license plates using neural networks served by [Torch
 
 ### Prod
 
+```bash
+DOCKER_BUILDKIT=1 docker-compose -f common.yml -f prod.yml up --build --force-recreate
+```
+
 ### Dev
 
 ```bash
@@ -14,7 +18,7 @@ DOCKER_BUILDKIT=1 docker-compose -f common.yml -f dev.yml up --build --force-rec
 
 ## Tests
 
-1. Start project
+1. Start dev version of the project
 
 2. Run tests
 

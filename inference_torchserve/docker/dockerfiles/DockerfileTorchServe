@@ -47,6 +47,21 @@ USER root
 RUN chmod -R 777 $HOMEDIR
 USER model-server
 
+COPY ../inference_torchserve/inference_torchserve $HOMEDIR/inference_torchserve/inference_torchserve
+COPY ../nn/nn $HOMEDIR/nn/nn
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install ../nn \
+    && pip install .
+
+
+FROM base as prod
+
+CMD [ \
+    "torchserve", "--start", "--ts-config", "inference_torchserve/config.properties", "--ncs", \
+    "&&", "python", "inference_torchserve/scripts/register_workflows.py", "--workflow_names", "plate_recognition.war" \
+]
+
 
 FROM base as dev
 
@@ -55,13 +70,6 @@ USER root
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r /requirements/dev.txt
 USER model-server
-
-COPY ../inference_torchserve/inference_torchserve $HOMEDIR/inference_torchserve/inference_torchserve
-COPY ../nn/nn $HOMEDIR/nn/nn
-
-RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install ../nn \
-    && pip install .
 
 CMD [ \
     "torchserve", "--start", "--ts-config", "inference_torchserve/config.properties", "--models", "all", "--ncs", \
