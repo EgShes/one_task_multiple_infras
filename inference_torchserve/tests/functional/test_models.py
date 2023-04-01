@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from typing import List, Tuple
 
@@ -54,7 +55,8 @@ def test_stn():
     input_shape = (4, 3, 24, 94)
     output_shape = (4, 3, 24, 94)
 
-    inputs = np.random.randn(*input_shape).astype(np.float32).tobytes()
+    inputs = {"data": np.random.randn(*input_shape).astype(np.float32).tolist()}
+    inputs = json.dumps(inputs).encode("utf-8")
 
     response = requests.post("http://localhost:8080/predictions/stn", data=inputs)
 
@@ -66,7 +68,8 @@ def test_stn():
 def test_lprnet():
     input_shape = (4, 3, 24, 94)
 
-    inputs = np.random.randn(*input_shape).astype(np.float32).tobytes()
+    inputs = {"data": np.random.randn(*input_shape).astype(np.float32).tolist()}
+    inputs = json.dumps(inputs).encode("utf-8")
 
     response = requests.post("http://localhost:8080/predictions/lprnet", data=inputs)
 
@@ -75,24 +78,37 @@ def test_lprnet():
         assert isinstance(text, str)
 
 
-def test_plate_recognition():
-    image = Path("tests/data/car.jpg")
-    # image = Path("tests/data/cat.jpeg")
+@pytest.mark.parametrize(
+    "img_path,expected_coordinates,expected_texts",
+    [
+        [
+            "tests/data/car.jpg",
+            np.array(
+                [
+                    [232, 813, 324, 842],
+                    [1097, 661, 1142, 674],
+                    [1521, 640, 1566, 652],
+                    [1286, 635, 1316, 644],
+                ]
+            ),
+            ["B840OK197", "", "", ""],
+        ],
+        ["tests/data/cat.jpeg", [], []],
+    ],
+)
+def test_plate_recognition(
+    img_path: Path,
+    expected_coordinates: List[List[int]],
+    expected_texts: List[str],
+):
+    image = Path(img_path).open("rb").read()
     response = requests.post(
         "http://localhost:8080/wfpredict/plate_recognition",
-        data=image.open("rb").read(),
+        data=image,
     )
 
     texts = response.json()["texts"]
     coordinates = response.json()["coordinates"]
-
-    expected_texts = ["B840OK197", "", "", ""]
-    expected_coordinates = [
-        [232, 813, 324, 842],
-        [1097, 661, 1142, 674],
-        [1521, 640, 1566, 652],
-        [1286, 635, 1316, 644],
-    ]
 
     assert texts == expected_texts
 

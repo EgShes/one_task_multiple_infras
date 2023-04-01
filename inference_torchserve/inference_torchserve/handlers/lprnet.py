@@ -18,6 +18,19 @@ class LprnetHandler(BaseHandler, ABC):
     def __init__(self):
         super().__init__()
 
+    def parse_request(self, data, context):
+        request = data[0].get("data") or data[0].get("body")
+        return json.loads(request.decode())
+
+    def handle(self, data, context):
+        request = self.parse_request(data, context)
+
+        # no predictions from previous stage. Pass it further with no processing
+        if len(request["data"]) == 0:
+            return [request]
+
+        return super().handle(data, context)
+
     def preprocess(self, data):
         features = data[0].get("data") or data[0].get("body")
 

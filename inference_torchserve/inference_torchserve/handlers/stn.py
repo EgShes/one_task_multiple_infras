@@ -14,25 +14,23 @@ class StnHandler(BaseHandler, ABC):
     def __init__(self):
         super().__init__()
 
+    def parse_request(self, data):
+        request = data[0].get("data") or data[0].get("body")
+        return json.loads(request.decode())
+
+    def handle(self, data, context):
+        request = self.parse_request(data)
+
+        # no predictions from previous stage. Pass it further with no processing
+        if len(request["data"]) == 0:
+            return [request]
+
+        return super().handle(data, context)
+
     def preprocess(self, data):
-        features = data[0].get("data") or data[0].get("body")
-
-        features_numpy = None
-        try:
-            # when used right after yolo
-            features_numpy = np.array(
-                json.loads(features.decode("utf-8"))["data"], dtype=np.float32
-            )
-        except UnicodeDecodeError:
-            pass
-
-        if features_numpy is None:
-            # when used on its own
-            features_numpy = np.frombuffer(features, dtype=np.float32).reshape(
-                -1, 3, 24, 94
-            )
-
-        features = torch.from_numpy(features_numpy)
+        request = self.parse_request(data)
+        features = np.array(request["data"], dtype=np.float32)
+        features = torch.from_numpy(features)
         logger.info(f"STN received input: {features.shape}")
         return features
 
