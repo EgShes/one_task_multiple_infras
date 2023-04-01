@@ -16,5 +16,6 @@ models:
       url: lprnet.mar
 
 dag:
-  yolo: [stn]
+  yolo: [stn, aggregate]
   stn: [lprnet]
+  lprnet: [aggregate]

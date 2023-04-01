@@ -82,4 +82,22 @@ def test_plate_recognition():
         "http://localhost:8080/wfpredict/plate_recognition",
         data=image.open("rb").read(),
     )
-    assert response.json()["data"] == ["B840OK197", "", "", ""]
+
+    texts = response.json()["texts"]
+    coordinates = response.json()["coordinates"]
+
+    expected_texts = ["B840OK197", "", "", ""]
+    expected_coordinates = [
+        [232, 813, 324, 842],
+        [1097, 661, 1142, 674],
+        [1521, 640, 1566, 652],
+        [1286, 635, 1316, 644],
+    ]
+
+    assert texts == expected_texts
+
+    for act_coord, exp_coord in zip(coordinates, expected_coordinates):
+        assert act_coord["xmin"] == exp_coord[0]
+        assert act_coord["ymin"] == exp_coord[1]
+        assert act_coord["xmax"] == exp_coord[2]
+        assert act_coord["ymax"] == exp_coord[3]
