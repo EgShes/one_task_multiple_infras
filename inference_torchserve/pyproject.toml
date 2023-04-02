@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "inference-torchserve"
+version = "0.1.0"
+description = ""
+authors = ["shest"]
+readme = "README.md"
+packages = [{include = "inference_torchserve"}]
+
+[tool.poetry.dependencies]
+python = "~3.8"
+nn = {path = "../nn", develop = true}
+torchserve = "0.7.1"
+pydantic = "^1.10.5"
+typed-argument-parser = "^1.8.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.4"
+pytest = "^7.2.1"
+torch-model-archiver = "^0.7.1"
+debugpy = "^1.6.6"
+torch-workflow-archiver = "^0.2.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,77 @@
+# syntax=docker/dockerfile:1.4
+
+# Torchserve container has pre-installed python. I failed to install packages into it with poetry.
+# Here file requirements.txt is exported from poetry to be later installed with pip
+FROM python:3.8 as requirements_maker
+
+ARG HOMEDIR=/home/model-server
+
+ENV POETRY_VENV_PATH=/opt/poetry_venv
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python3.8 -m venv $POETRY_VENV_PATH \
+    && $POETRY_VENV_PATH/bin/pip install pip==22.0.4 setuptools==56.0.0 \
+    && $POETRY_VENV_PATH/bin/pip install poetry==1.3.2 \
+    && ln $POETRY_VENV_PATH/bin/poetry /usr/local/bin/poetry
+
+COPY ../inference_torchserve/pyproject.toml $HOMEDIR/inference_torchserve/pyproject.toml
+COPY ../inference_torchserve/poetry.lock $HOMEDIR/inference_torchserve/poetry.lock
+COPY ../inference_torchserve/inference_torchserve/__init__.py $HOMEDIR/inference_torchserve/inference_torchserve/__init__.py
+COPY ../nn/pyproject.toml $HOMEDIR/nn/pyproject.toml
+COPY ../nn/poetry.lock $HOMEDIR/nn/poetry.lock
+COPY ../nn/nn/__init__.py $HOMEDIR/nn/nn/__init__.py
+
+WORKDIR $HOMEDIR/inference_torchserve
+
+RUN mkdir /requirements
+RUN poetry export --format requirements.txt --without-hashes > /requirements/prod.txt
+RUN poetry export --format requirements.txt --with=dev --without-hashes > /requirements/dev.txt
+
+
+
+FROM pytorch/torchserve:0.7.1-gpu as base
+
+ARG HOMEDIR=/home/model-server
+
+COPY --from=requirements_maker /requirements /requirements
+
+COPY ../inference_torchserve/pyproject.toml $HOMEDIR/inference_torchserve/pyproject.toml
+COPY ../inference_torchserve/poetry.lock $HOMEDIR/inference_torchserve/poetry.lock
+COPY ../inference_torchserve/inference_torchserve/__init__.py $HOMEDIR/inference_torchserve/inference_torchserve/__init__.py
+COPY ../inference_torchserve/README.md $HOMEDIR/inference_torchserve/README.md
+COPY ../nn/pyproject.toml $HOMEDIR/nn/pyproject.toml
+COPY ../nn/poetry.lock $HOMEDIR/nn/poetry.lock
+COPY ../nn/nn/__init__.py $HOMEDIR/nn/nn/__init__.py
+
+WORKDIR $HOMEDIR/inference_torchserve
+USER root
+RUN chmod -R 777 $HOMEDIR
+USER model-server
+
+COPY ../inference_torchserve/inference_torchserve $HOMEDIR/inference_torchserve/inference_torchserve
+COPY ../nn/nn $HOMEDIR/nn/nn
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install ../nn \
+    && pip install .
+
+
+FROM base as prod
+
+CMD [ \
+    "torchserve", "--start", "--ts-config", "inference_torchserve/config.properties", "--ncs", \
+    "&&", "python", "inference_torchserve/scripts/register_workflows.py", "--workflow_names", "plate_recognition.war" \
+]
+
+
+FROM base as dev
+
+# switching to root to use pip cache
+USER root
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install -r /requirements/dev.txt
+USER model-server
+
+CMD [ \
+    "torchserve", "--start", "--ts-config", "inference_torchserve/config.properties", "--models", "all", "--ncs", \
+    "&&", "python", "inference_torchserve/scripts/register_workflows.py", "--workflow_names", "plate_recognition.war" \
+]

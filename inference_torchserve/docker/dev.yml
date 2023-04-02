@@ -1,0 +1,10 @@
+services:
+
+  torchserve:
+    build:
+      target: dev
+    volumes:
+      - ../../inference_torchserve:/home/model-server/inference_torchserve
+      - ../../nn:/home/model-server/nn
+    ports:
+      - 5678:5678
