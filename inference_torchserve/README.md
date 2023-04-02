@@ -18,7 +18,7 @@ DOCKER_BUILDKIT=1 docker-compose -f common.yml -f dev.yml up --build --force-rec
 
 ## Tests
 
-1. Start dev version of the project
+1. Start [dev](#dev) version of the project
 
 2. Run tests
 

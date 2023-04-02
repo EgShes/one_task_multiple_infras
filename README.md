@@ -8,3 +8,8 @@ The task chosen is recognition of russian car license plates. Models were taken 
 
 - __nn__ - package with models
 - __inference_triton__ - package for serving with [Nvidia Triton Inference Server](https://developer.nvidia.com/nvidia-triton-inference-server)
+- __inference_torchserve__ - package for serving with [TorchServe](https://pytorch.org/serve/)
+
+# Posts
+
+- [inference_triton](https://habr.com/ru/post/717890/)
