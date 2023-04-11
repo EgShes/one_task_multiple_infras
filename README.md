@@ -13,3 +13,4 @@ The task chosen is recognition of russian car license plates. Models were taken 
 # Posts
 
 - [inference_triton](https://habr.com/ru/post/717890/)
+- [inference_torchserve](https://habr.com/ru/articles/727484/)
