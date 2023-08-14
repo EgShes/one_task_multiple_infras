@@ -1,1 +1,4 @@
 bentoml==1.1.1
+../nn
+opencv-python==4.8.0.76
+pytest
