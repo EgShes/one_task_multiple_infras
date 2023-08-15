@@ -11,6 +11,3 @@ Recognition of russian car license plates using neural networks served by [Bento
 ```bash
 pytest -vv --disable-warnings tests
 ```
-
-
-

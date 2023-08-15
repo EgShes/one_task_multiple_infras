@@ -1,6 +1,6 @@
 import bentoml
-import torch
 import numpy as np
+import torch
 
 from nn.models import load_yolo
 from nn.settings import settings
