@@ -29,12 +29,14 @@ pytest -vv --disable-warnings tests
 Models have already been added to this repo. There is no need to run this code to start the project.
 The code below is just to explain how the artifacts were created.
 
-```bash
-export BENTOML_HOME=./bento_store
-```
-
 #### STN
 
 ```bash
 python -m inference_bentoml.scripts.prepare_stn
+```
+
+#### LPRNET
+
+```bash
+python -m inference_bentoml.scripts.prepare_lprnet
 ```

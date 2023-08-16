@@ -33,3 +33,14 @@ def test_stn_model():
 
     assert prediction.shape == inputs.shape
     assert prediction.dtype == torch.float32
+
+
+def test_lprnet_model():
+    inputs = torch.randn(4, 3, 24, 94)
+
+    runner = bentoml.pytorch.get("lprnet").to_runner()
+    runner.init_local()
+    prediction = runner.run(inputs)
+
+    assert prediction.shape == (4, 23, 18)
+    assert prediction.dtype == torch.float32
