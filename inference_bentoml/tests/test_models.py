@@ -19,9 +19,10 @@ def test_yolo_model():
     runner.init_local()
     prediction = runner.run(inputs)
 
-    assert np.array_equal(
-        prediction.pandas().xyxy[0].to_numpy(), np.empty((0, 7), dtype=np.object_)
-    )
+    assert prediction.plates.shape == (0,)
+    assert prediction.plates.dtype == np.float32
+    assert prediction.coordinates.shape == (0, 4)
+    assert prediction.coordinates.dtype == np.object_
 
 
 def test_stn_model():
