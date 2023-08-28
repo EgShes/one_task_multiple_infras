@@ -1,0 +1,14 @@
+service: "inference_bentoml.service:svc"  # Same as the argument passed to `bentoml serve`
+include:
+    - "*"
+python:
+    requirements_txt: "requirements.txt"
+    lock_packages: false
+exclude:
+    - "bento_store/"
+    - "__pycache__/"
+docker:
+    distro: debian
+    python_version: "3.8"
+    cuda_version: "11.6.2"
+    dockerfile_template: "./Dockerfile.template"

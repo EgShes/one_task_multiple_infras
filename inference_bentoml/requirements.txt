@@ -119,7 +119,7 @@ multidict==6.0.4
     # via
     #   aiohttp
     #   yarl
-nn @ file:///home/egor/projects/one_task_multiple_infras/nn
+../nn
     # via -r requirements.in
 numpy==1.24.4
     # via

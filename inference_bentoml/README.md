@@ -18,6 +18,25 @@ pip install --upgrade pip pip-tools
 pip install -r requirements.txt
 ```
 
+## Run bentoml
+
+```bash
+export BENTOML_HOME=./bento_store
+bentoml build
+```
+
+Locally
+
+```bash
+bentoml serve plate_recognition
+```
+
+With docker
+
+```bash
+bentoml containerize --opt build-context=nn=$PWD/.. plate_recognition
+```
+
 ## Tests
 
 ```bash

@@ -26,8 +26,9 @@ class YoloRunnable(bentoml.Runnable):
             device,
         )
 
-    @bentoml.Runnable.method(batchable=True, batch_dim=0)
+    @bentoml.Runnable.method(batchable=False)
     def predict(self, inputs: np.ndarray):
+        inputs = inputs.astype(np.float32)
         image = prepare_detection_input(inputs)
 
         detection = self.model(image, size=settings.YOLO.PREDICT_SIZE)

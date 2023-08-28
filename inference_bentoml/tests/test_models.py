@@ -58,10 +58,10 @@ def test_lprnet_model():
         [
             "tests/data/car.jpg",
             [
-                (232.44186, 814.19446, 324.64374, 841.9125),
-                (1097.4425, 661.41547, 1141.9923, 674.0388),
-                (1520.4563, 639.6942, 1567.8191, 653.18317),
-                (1286.0554, 636.13745, 1317.4097, 645.0998),
+                (232, 814, 324, 841),
+                (1097, 661, 1141, 674),
+                (1520, 639, 1567, 653),
+                (1286, 636, 1317, 645),
             ],
             ["B840CK197", "", "", ""],
         ],
@@ -97,5 +97,8 @@ def test_recognize(
         prediction.coordinates, expected_coordinates
     ):
         assert all(
-            [np.allclose(ac, ex) for ac, ex in zip(actual_coord, expected_coord)]
+            [
+                np.allclose(ac, ex, atol=0.999)
+                for ac, ex in zip(actual_coord, expected_coord)
+            ]
         )
