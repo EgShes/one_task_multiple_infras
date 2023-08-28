@@ -12,3 +12,7 @@ docker:
     python_version: "3.8"
     cuda_version: "11.6.2"
     dockerfile_template: "./Dockerfile.template"
+    system_packages:
+        - ffmpeg
+        - libsm6
+        - libxext6

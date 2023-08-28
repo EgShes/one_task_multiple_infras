@@ -35,6 +35,8 @@ cattrs==23.1.2
     # via bentoml
 certifi==2023.7.22
     # via requests
+cfgv==3.4.0
+    # via pre-commit
 charset-normalizer==3.2.0
     # via
     #   aiohttp
@@ -63,6 +65,8 @@ deepmerge==1.1.0
     # via bentoml
 deprecated==1.2.14
     # via opentelemetry-api
+distlib==0.3.7
+    # via virtualenv
 exceptiongroup==1.1.2
     # via
     #   anyio
@@ -70,6 +74,8 @@ exceptiongroup==1.1.2
     #   pytest
 executing==1.2.0
     # via stack-data
+filelock==3.12.3
+    # via virtualenv
 fonttools==4.42.0
     # via matplotlib
 frozenlist==1.4.0
@@ -84,6 +90,8 @@ gitpython==3.1.32
     # via nn
 h11==0.14.0
     # via uvicorn
+identify==2.5.27
+    # via pre-commit
 idna==3.4
     # via
     #   anyio
@@ -111,6 +119,7 @@ matplotlib==3.7.1
     # via
     #   nn
     #   seaborn
+    #   ultralytics
 matplotlib-inline==0.1.6
     # via ipython
 mdurl==0.1.2
@@ -121,6 +130,8 @@ multidict==6.0.4
     #   yarl
 ../nn
     # via -r requirements.in
+nodeenv==1.8.0
+    # via pre-commit
 numpy==1.24.4
     # via
     #   bentoml
@@ -132,6 +143,7 @@ numpy==1.24.4
     #   scipy
     #   seaborn
     #   torchvision
+    #   ultralytics
 nvidia-cublas-cu11==11.10.3.66
     # via
     #   nvidia-cudnn-cu11
@@ -143,7 +155,9 @@ nvidia-cuda-runtime-cu11==11.7.99
 nvidia-cudnn-cu11==8.5.0.96
     # via torch
 opencv-python==4.8.0.76
-    # via -r requirements.in
+    # via
+    #   -r requirements.in
+    #   ultralytics
 opencv-python-headless==4.8.0.74
     # via nn
 opentelemetry-api==1.18.0
@@ -186,6 +200,7 @@ pandas==1.5.3
     # via
     #   nn
     #   seaborn
+    #   ultralytics
 parso==0.8.3
     # via jedi
 pathspec==0.11.2
@@ -199,12 +214,17 @@ pillow==9.5.0
     #   matplotlib
     #   nn
     #   torchvision
+    #   ultralytics
 pip-requirements-parser==32.0.1
     # via bentoml
 pip-tools==7.3.0
     # via bentoml
+platformdirs==3.10.0
+    # via virtualenv
 pluggy==1.2.0
     # via pytest
+pre-commit==3.3.3
+    # via -r requirements.in
 prometheus-client==0.17.1
     # via bentoml
 prompt-toolkit==3.0.39
@@ -214,10 +234,13 @@ psutil==5.9.5
     #   bentoml
     #   circus
     #   nn
+    #   ultralytics
 ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.2
     # via stack-data
+py-cpuinfo==9.0.0
+    # via ultralytics
 pydantic==1.10.12
     # via
     #   -r requirements.in
@@ -251,6 +274,8 @@ pyyaml==6.0.1
     # via
     #   bentoml
     #   nn
+    #   pre-commit
+    #   ultralytics
 pyzmq==25.1.0
     # via circus
 requests==2.31.0
@@ -258,14 +283,19 @@ requests==2.31.0
     #   bentoml
     #   nn
     #   torchvision
+    #   ultralytics
 rich==13.5.2
     # via bentoml
 schema==0.7.5
     # via bentoml
 scipy==1.10.1
-    # via nn
+    # via
+    #   nn
+    #   ultralytics
 seaborn==0.12.2
-    # via nn
+    # via
+    #   nn
+    #   ultralytics
 simple-di==0.1.5
     # via bentoml
 six==1.16.0
@@ -291,12 +321,17 @@ torch==1.13.1
     # via
     #   nn
     #   torchvision
+    #   ultralytics
 torchvision==0.14.1
-    # via nn
+    # via
+    #   nn
+    #   ultralytics
 tornado==6.3.2
     # via circus
 tqdm==4.65.2
-    # via nn
+    # via
+    #   nn
+    #   ultralytics
 traitlets==5.9.0
     # via
     #   ipython
@@ -305,6 +340,7 @@ typing-extensions==4.7.1
     # via
     #   asgiref
     #   cattrs
+    #   filelock
     #   ipython
     #   opentelemetry-sdk
     #   pydantic
@@ -313,10 +349,14 @@ typing-extensions==4.7.1
     #   torch
     #   torchvision
     #   uvicorn
+ultralytics==8.0.164
+    # via -r requirements.in
 urllib3==2.0.4
     # via requests
 uvicorn==0.23.2
     # via bentoml
+virtualenv==20.24.3
+    # via pre-commit
 watchfiles==0.19.0
     # via bentoml
 wcwidth==0.2.6
