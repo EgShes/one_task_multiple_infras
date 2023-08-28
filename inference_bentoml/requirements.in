@@ -1,0 +1,7 @@
+bentoml==1.1.1
+../nn
+opencv-python==4.8.0.76
+pytest
+pre-commit
+pydantic==1.10.12
+ultralytics==8.0.164
