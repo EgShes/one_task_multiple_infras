@@ -1,2 +1,7 @@
-pytest
+../nn
 pre-commit
+pydantic==1.10.12
+pytest
+ray[serve]
+requests==2.31.0
+ultralytics==8.0.164
