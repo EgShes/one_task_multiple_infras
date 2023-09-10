@@ -17,10 +17,7 @@ class YoloPrediction(NamedTuple):
 
 
 class YoloModel:
-    def __init__(self, model_file: Path):
-        device = (
-            torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-        )
+    def __init__(self, model_file: Path, device: torch.device = torch.device("cpu")):
         self.model = load_yolo(model_file, settings.YOLO.CONFIDENCE, device)
 
     def predict(self, inputs: np.ndarray) -> YoloPrediction:

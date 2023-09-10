@@ -10,5 +10,13 @@ Create virtual environment
 python3.8 -m venv env
 source env/bin/activate
 pip install --upgrade pip pip-tools
-pip install -r requirements.txt
+pip-sync requirements.txt
+```
+
+## Tests
+
+### Unit
+
+```bash
+pytest -vv --disable-warnings tests/test_models.py
 ```
