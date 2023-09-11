@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import torch
+from ray import serve
 
 from nn.models import load_lprnet
 from nn.settings import settings as settings_nn
@@ -19,3 +20,6 @@ class LprnetModel:
         with torch.no_grad():
             predictions = self.model(inputs)
         return predictions
+
+
+LprnetDeployment = serve.deployment(LprnetModel, "lprnet")

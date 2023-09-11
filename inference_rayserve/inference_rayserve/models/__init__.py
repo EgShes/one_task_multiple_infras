@@ -1,3 +1,3 @@
-from .lprnet import LprnetModel
-from .stn import StnModel
-from .yolo import YoloModel
+from .lprnet import LprnetDeployment, LprnetModel
+from .stn import StnDeployment, StnModel
+from .yolo import YoloDeployment, YoloModel

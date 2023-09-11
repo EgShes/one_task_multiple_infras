@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import torch
+from ray import serve
 
 from nn.models import load_stn
 
@@ -13,3 +14,6 @@ class StnModel:
         with torch.no_grad():
             predictions = self.model(inputs)
         return predictions
+
+
+StnDeployment = serve.deployment(StnModel, "stn")

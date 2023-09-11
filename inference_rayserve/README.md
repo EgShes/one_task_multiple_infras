@@ -13,10 +13,22 @@ pip install --upgrade pip pip-tools
 pip-sync requirements.txt
 ```
 
+### Locally
+
+```bash
+serve run inference_rayserve.service:app
+```
+
 ## Tests
 
 ### Unit
 
 ```bash
 pytest -vv --disable-warnings tests/test_models.py
+```
+
+### Functional
+
+```bash
+pytest -vv --disable-warinings tests/test_service.py
 ```

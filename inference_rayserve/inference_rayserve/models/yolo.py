@@ -43,4 +43,4 @@ class YoloModel:
         return prediction
 
 
-yolo_deployment = serve.deployment(YoloModel, "yolo")
+YoloDeployment = serve.deployment(YoloModel, "yolo")
