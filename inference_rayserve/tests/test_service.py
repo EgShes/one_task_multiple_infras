@@ -31,7 +31,7 @@ def test_recognize(
 ):
     inputs = cv2.imread(str(img_path))
 
-    response = requests.post("http://127.0.0.1:8000/", json=inputs.tolist())
+    response = requests.post("http://localhost:8000/", json=inputs.tolist())
     prediction = PlatePrediction.parse_raw(response.text)
 
     assert prediction.texts == expected_texts

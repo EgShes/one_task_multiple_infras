@@ -19,6 +19,13 @@ pip-sync requirements.txt
 serve run inference_rayserve.service:app
 ```
 
+### In Docker
+
+```bash
+DOCKER_BUILDKIT=1 docker build --tag inference_rayserve --build-context nn=../nn .
+docker run --rm --name inference_rayserve -p 8000:8000 --shm-size=12g inference_rayserve
+```
+
 ## Tests
 
 ### Unit

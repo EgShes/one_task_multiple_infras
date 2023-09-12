@@ -125,7 +125,7 @@ multidict==6.0.4
     # via
     #   aiohttp
     #   yarl
-nn @ file:///home/egor/projects/one_task_multiple_infras/nn
+../nn
     # via -r requirements.in
 nodeenv==1.8.0
     # via pre-commit
