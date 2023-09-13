@@ -10,6 +10,7 @@ The task chosen is recognition of russian car license plates. Models were taken 
 - __inference_triton__ - package for serving with [Nvidia Triton Inference Server](https://developer.nvidia.com/nvidia-triton-inference-server)
 - __inference_torchserve__ - package for serving with [TorchServe](https://pytorch.org/serve/)
 - __inference_bentoml__ - package for serving with [BentoML](https://www.bentoml.com/)
+- __inference_rayserve__ - package for serving with [RayServe](https://www.ray.io/ray-serve)
 
 # Posts
 

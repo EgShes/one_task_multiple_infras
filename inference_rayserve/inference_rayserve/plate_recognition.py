@@ -27,7 +27,7 @@ class PlatePrediction(BaseModel):
 @serve.deployment(
     "plate_recognition",
     ray_actor_options={
-        "num_cpus": settings.CPU_PRE_MODEL,
+        "num_cpus": settings.CPU_PER_MODEL,
         "num_gpus": settings.GPU_PER_MODEL,
     },
 )
