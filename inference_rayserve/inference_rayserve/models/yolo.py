@@ -6,9 +6,10 @@ import torch
 from ray import serve
 from starlette.requests import Request
 
+from inference_rayserve.settings import settings
 from nn.inference.predictor import prepare_detection_input, prepare_recognition_input
 from nn.models import load_yolo
-from nn.settings import settings
+from nn.settings import settings as settings_nn
 
 
 class YoloPrediction(NamedTuple):
@@ -18,13 +19,13 @@ class YoloPrediction(NamedTuple):
 
 class YoloModel:
     def __init__(self, model_file: Path, device: torch.device = torch.device("cpu")):
-        self.model = load_yolo(model_file, settings.YOLO.CONFIDENCE, device)
+        self.model = load_yolo(model_file, settings_nn.YOLO.CONFIDENCE, device)
 
     def predict(self, inputs: np.ndarray) -> YoloPrediction:
         inputs = inputs.astype(np.float32)
         image = prepare_detection_input(inputs)
 
-        detection = self.model(image, size=settings.YOLO.PREDICT_SIZE)
+        detection = self.model(image, size=settings_nn.YOLO.PREDICT_SIZE)
 
         df_results = detection.pandas().xyxy[0]
         plates = prepare_recognition_input(
@@ -43,4 +44,11 @@ class YoloModel:
         return prediction
 
 
-YoloDeployment = serve.deployment(YoloModel, "yolo")
+YoloDeployment = serve.deployment(
+    YoloModel,
+    "yolo",
+    ray_actor_options={
+        "num_cpus": settings.CPU_PRE_MODEL,
+        "num_gpus": settings.GPU_PER_MODEL,
+    },
+)

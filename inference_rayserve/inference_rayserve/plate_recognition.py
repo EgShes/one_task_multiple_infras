@@ -6,9 +6,10 @@ from pydantic import BaseModel
 from ray import serve
 from starlette.requests import Request
 
+from inference_rayserve.settings import settings
 from nn.inference.decode import beam_decode
 from nn.inference.predictor import filter_predictions
-from nn.settings import settings
+from nn.settings import settings as settings_nn
 
 
 class PlateCoordinates(NamedTuple):
@@ -23,7 +24,13 @@ class PlatePrediction(BaseModel):
     texts: List[str]
 
 
-@serve.deployment()
+@serve.deployment(
+    "plate_recognition",
+    ray_actor_options={
+        "num_cpus": settings.CPU_PRE_MODEL,
+        "num_gpus": settings.GPU_PER_MODEL,
+    },
+)
 class PlateRecognitionDeployment:
     def __init__(self, yolo, stn, lprnet):
         self.yolo = yolo
@@ -50,7 +57,7 @@ class PlateRecognitionDeployment:
         # postprocess texts
         labels, log_likelihood, _ = beam_decode(
             text_features.cpu().numpy(),
-            settings.VOCAB.VOCAB,
+            settings_nn.VOCAB.VOCAB,
         )
         predicted_plates = filter_predictions(labels, log_likelihood)
         predicted_plates = [
