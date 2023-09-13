@@ -23,7 +23,7 @@ serve run inference_rayserve.service:app
 
 ```bash
 DOCKER_BUILDKIT=1 docker build --tag inference_rayserve --build-context nn=../nn .
-docker run --rm --name inference_rayserve -p 8000:8000 --shm-size=12g inference_rayserve
+docker run --rm --name inference_rayserve -p 8000:8000 -p 8265:8265 --gpus all --shm-size=12g inference_rayserve
 ```
 
 ## Tests
