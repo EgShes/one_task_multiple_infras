@@ -26,11 +26,12 @@ exclude = [
     "node_modules",
     "venv",
 ]
-per-file-ignores = {}
-
 line-length = 88
 
 target-version = "py39"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401", "E402"]
 
 [tool.ruff.mccabe]
 max-complexity = 10
